@@ -4,6 +4,7 @@ import './App.scss';
 import { useState } from 'react';
 import { GoodList } from './components/GoodList/GoodsList';
 import { SortTypes } from './constants/sortTypes';
+import { getVisibleGoods } from './helpers/getVisibleGoods';
 
 export const goodsFromServer = [
   'Dumplings',
@@ -18,6 +19,8 @@ export const goodsFromServer = [
   'Garlic',
 ];
 
+const initialGoods = goodsFromServer.map((name, idx) => ({ idx, name }));
+
 export const App = () => {
   const [sortBy, setSortBy] = useState(SortTypes.NONE);
   const [isReversed, setIsReversed] = useState(false);
@@ -27,23 +30,11 @@ export const App = () => {
     setIsReversed(false);
   };
 
-  const initialGoods = goodsFromServer.map((name, idx) => ({ idx, name }));
   let visibleGoods = [...initialGoods];
 
-  visibleGoods = visibleGoods.sort((good1, good2) => {
-    switch (sortBy) {
-      case SortTypes.ALPHABETICAL:
-        return good1.name.localeCompare(good2.name);
-      case SortTypes.LENGTH:
-        return good1.name.length - good2.name.length;
-      default:
-        return 0;
-    }
-  });
+  visibleGoods = getVisibleGoods(visibleGoods, { sortBy, isReversed });
 
-  if (isReversed) {
-    visibleGoods = visibleGoods.reverse();
-  }
+  const hasChanges = sortBy !== SortTypes.NONE || isReversed;
 
   return (
     <GoodList
@@ -53,6 +44,7 @@ export const App = () => {
       onSort={setSortBy}
       onReverse={updateIsReversed}
       onReset={reset}
+      hasChanges={hasChanges}
     />
   );
 };

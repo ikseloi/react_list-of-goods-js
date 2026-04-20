@@ -21,10 +21,10 @@ export const GoodList = ({
   onSort,
   onReverse,
   onReset,
+  hasChanges,
 }) => {
   const handleSortAlphabetical = () => onSort(SortTypes.ALPHABETICAL);
   const handleSortLength = () => onSort(SortTypes.LENGTH);
-  const isActiveReset = sortBy !== SortTypes.NONE || isReversed;
 
   return (
     <div className="section content">
@@ -50,7 +50,7 @@ export const GoodList = ({
           onClick={onReverse}
         />
 
-        {isActiveReset && (
+        {hasChanges && (
           <Button
             name="Reset"
             color="is-danger"
